@@ -282,6 +282,7 @@
     <li><a href="#admiral">Admiral ACR</a></li>
     <li><a href="#medio">Hacia el Medio</a></li>
     <li><a href="#negociaciones">Negociaciones</a></li>
+    <li><a href="#breakeven">Breakeven</a></li>
     <li><a href="#conclusion">Conclusión</a></li>
     
   </ul>
@@ -882,6 +883,285 @@
     <strong>El orden importa:</strong> La infraestructura (Amagi + Samba TV + TDF) desbloquea todo lo demás. Sin datos ACR no hay producto diferencial para anunciantes. Sin contenido local no hay razón para que el usuario abra Frávega Play en lugar de Pluto. Las negociaciones de Capa 00 son las que determinan la velocidad de todo el proyecto.
   </div>
 </section>
+
+<div class="divider"></div>
+
+<!-- BREAKEVEN FRÁVEGA PLAY -->
+<section id="breakeven">
+  <div class="section-num">05 — Modelo Financiero</div>
+  <h2 class="section-title">Frávega Play:<br><em>punto de equilibrio</em></h2>
+  <p class="section-intro">Modelo 100% revenue share — sin costos fijos de contenido. Los únicos costos fijos son la plataforma técnica (Amagi + CDN, ~$48K/año). Todo el contenido se negocia como rev-share, eliminando el riesgo antes del breakeven.</p>
+
+  <style>
+    .be-controls { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; }
+    .be-ctrl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem; }
+    .be-ctrl-section { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent2); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+    .be-sl-row { display: flex; align-items: center; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+    .be-sl-row:last-child { border-bottom: none; }
+    .be-sl-name { font-size: 0.82rem; color: var(--muted2); width: 200px; flex-shrink: 0; }
+    .be-sl-row input[type=range] { flex: 1; height: 2px; -webkit-appearance: none; appearance: none; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+    .be-sl-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+    .be-sl-val { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--white); width: 60px; text-align: right; flex-shrink: 0; }
+    .be-key-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 2rem; }
+    .be-key-cell { background: var(--surface); padding: 2rem; transition: background 0.25s; }
+    .be-key-cell:hover { background: var(--surface2); }
+    .be-key-label { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--muted2); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .be-key-val { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 2.8rem; line-height: 1; margin-bottom: 0.4rem; }
+    .be-key-sub { font-size: 0.8rem; color: var(--muted2); font-weight: 300; }
+    .be-math { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; }
+    .be-math-title { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--accent2); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .be-math-step { display: flex; align-items: baseline; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border); font-size: 0.87rem; }
+    .be-math-step:last-child { border-bottom: none; }
+    .be-math-n { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); width: 1.5rem; flex-shrink: 0; }
+    .be-math-desc { color: var(--muted2); flex: 1; }
+    .be-math-calc { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--white); text-align: right; white-space: nowrap; }
+    .be-math-step.result .be-math-desc { color: var(--white); font-weight: 500; }
+    .be-math-step.result .be-math-calc { color: var(--accent); font-size: 0.95rem; }
+    .be-math-step.be-line .be-math-desc { color: var(--accent2); }
+    .be-math-step.be-line .be-math-calc { color: var(--accent2); }
+    .be-scenarios { background: var(--surface); border: 1px solid var(--border); margin-bottom: 2rem; overflow-x: auto; }
+    .be-sc-head { display: grid; grid-template-columns: 1.2fr repeat(5, 1fr); background: var(--surface2); border-bottom: 1px solid var(--border); }
+    .be-sc-head-cell { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted2); letter-spacing: 0.08em; text-align: right; padding: 0.8rem 1rem; }
+    .be-sc-head-cell:first-child { text-align: left; }
+    .be-sc-row { display: grid; grid-template-columns: 1.2fr repeat(5, 1fr); border-bottom: 1px solid var(--border); transition: background 0.2s; }
+    .be-sc-row:last-child { border-bottom: none; }
+    .be-sc-row:hover { background: var(--surface2); }
+    .be-sc-row.active-row { background: rgba(212,224,32,0.04); }
+    .be-sc-cell { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--muted2); text-align: right; padding: 0.75rem 1rem; }
+    .be-sc-cell:first-child { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--white); text-align: left; }
+    .be-sc-cell.pos { color: var(--accent2); }
+    .be-sc-cell.neg { color: var(--red); }
+    .be-badge { font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.2rem 0.5rem; display: inline-block; }
+    .be-badge-be { background: rgba(34,232,192,0.12); color: var(--accent2); border: 1px solid rgba(34,232,192,0.3); }
+    .be-badge-act { background: rgba(212,224,32,0.1); color: var(--accent); border: 1px solid rgba(212,224,32,0.3); }
+    .be-badge-no { background: rgba(240,48,96,0.1); color: var(--red); border: 1px solid rgba(240,48,96,0.2); }
+    .be-chart-wrap { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; }
+    .be-chart-title { font-family: 'Source Serif 4', serif; font-weight: 600; font-size: 0.95rem; color: var(--white); margin-bottom: 0.3rem; }
+    .be-chart-sub { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--muted2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .be-legend { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .be-li { display: flex; align-items: center; gap: 0.5rem; font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted2); }
+    .be-ld { width: 10px; height: 10px; }
+  </style>
+
+  <div class="be-controls">
+    <div class="be-ctrl-section">Supuestos — ajustá para simular</div>
+    <div class="be-ctrl-grid">
+      <div>
+        <div class="be-sl-row"><span class="be-sl-name">Devices inicio 2026</span><input type="range" min="20000" max="200000" step="5000" id="be-base" value="60000" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-base">60K</span></div>
+        <div class="be-sl-row"><span class="be-sl-name">Ventas nuevas / año</span><input type="range" min="10000" max="80000" step="5000" id="be-sales" value="35000" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-sales">35K/año</span></div>
+        <div class="be-sl-row"><span class="be-sl-name">% adoption Frávega Play</span><input type="range" min="5" max="70" step="1" id="be-adopt" value="25" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-adopt">25%</span></div>
+        <div class="be-sl-row"><span class="be-sl-name">% logueados CDP</span><input type="range" min="10" max="90" step="5" id="be-login" value="50" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-login">50%</span></div>
+      </div>
+      <div>
+        <div class="be-sl-row"><span class="be-sl-name">Viewership diario / usuario</span><input type="range" min="10" max="60" step="1" id="be-view" value="20" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-view">20 min</span></div>
+        <div class="be-sl-row"><span class="be-sl-name">Fill rate</span><input type="range" min="10" max="80" step="5" id="be-fill" value="35" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-fill">35%</span></div>
+        <div class="be-sl-row"><span class="be-sl-name">Rev-share cedido al contenido</span><input type="range" min="20" max="70" step="5" id="be-rs" value="50" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-rs">50%</span></div>
+        <div class="be-sl-row"><span class="be-sl-name">Costo fijo plataforma / año</span><input type="range" min="20000" max="120000" step="5000" id="be-fixed" value="48000" oninput="beUpdate()"><span class="be-sl-val" id="be-lbl-fixed">$48K</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="be-key-grid" id="be-key-grid"></div>
+
+  <div class="be-math" id="be-math"></div>
+
+  <div class="insight teal" id="be-insight" style="margin-bottom:2rem;"></div>
+
+  <div class="be-scenarios">
+    <div class="be-sc-head">
+      <div class="be-sc-head-cell">Adoption %</div>
+      <div class="be-sc-head-cell">50K devices</div>
+      <div class="be-sc-head-cell">78K devices</div>
+      <div class="be-sc-head-cell">95K devices</div>
+      <div class="be-sc-head-cell">120K devices</div>
+      <div class="be-sc-head-cell">150K devices</div>
+    </div>
+    <div id="be-sc-rows"></div>
+  </div>
+
+  <div class="be-chart-wrap">
+    <div class="be-chart-title">Curva de revenue neto vs costos fijos</div>
+    <div class="be-chart-sub">Revenue retenido (después de rev-share) vs costo fijo de plataforma — por volumen de devices</div>
+    <div class="be-legend">
+      <div class="be-li"><div class="be-ld" style="background:var(--accent);"></div>Revenue bruto</div>
+      <div class="be-li"><div class="be-ld" style="background:rgba(240,48,96,0.7);"></div>Rev-share cedido</div>
+      <div class="be-li"><div class="be-ld" style="background:var(--muted);"></div>Costo fijo plataforma</div>
+      <div class="be-li"><div class="be-ld" style="background:var(--accent2);"></div>Margen neto</div>
+    </div>
+    <div style="position:relative;height:280px;"><canvas id="be-chart"></canvas></div>
+  </div>
+
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+(function() {
+  const SPOTS = 4;
+  const ACR_MULT = 1.8;
+  let beChart;
+
+  function beN(n) {
+    if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+    if (n >= 1000) return Math.round(n/1000) + 'K';
+    return Math.round(n).toString();
+  }
+  function beU(n) {
+    const a = Math.abs(n); let s;
+    if (a >= 1000000) s = '$' + (a/1000000).toFixed(1) + 'M';
+    else if (a >= 1000) s = '$' + Math.round(a/1000) + 'K';
+    else s = '$' + Math.round(a);
+    return n < 0 ? '-' + s : s;
+  }
+
+  function beRevBruto(park, adopt, login, view, fill, cpmAnon, cpmCdp) {
+    const actDev  = Math.round(park * adopt / 100);
+    const logDev  = Math.round(actDev * login / 100);
+    const anonDev = actDev - logDev;
+    const acrDev  = Math.round(logDev * 0.35);
+    const cdpDev  = logDev - acrDev;
+    const fr = fill / 100;
+    const spots = ((view / 60) * SPOTS) * 365;
+    return (anonDev * spots * fr / 1000) * cpmAnon +
+           (cdpDev  * spots * fr / 1000) * cpmCdp +
+           (acrDev  * spots * fr / 1000) * (cpmCdp * ACR_MULT);
+  }
+
+  function beBreakevenDevices(adopt, login, view, fill, cpmAnon, cpmCdp, rs, fixed) {
+    const fr = fill / 100;
+    const spots = ((view / 60) * SPOTS) * 365;
+    const aR = adopt / 100; const lR = login / 100; const acrR = 0.35;
+    const rpdPark = aR * (
+      (1 - lR) * spots * fr / 1000 * cpmAnon +
+      (lR * (1 - acrR)) * spots * fr / 1000 * cpmCdp +
+      (lR * acrR) * spots * fr / 1000 * (cpmCdp * ACR_MULT)
+    );
+    const netPerPark = rpdPark * (1 - rs / 100);
+    if (netPerPark <= 0) return Infinity;
+    return Math.ceil(fixed / netPerPark);
+  }
+
+  function parkAvg(base, sales, year) {
+    const e = year - 2026;
+    return Math.round((base + sales * e) + sales * 0.5);
+  }
+
+  window.beUpdate = function() {
+    const base    = parseInt(document.getElementById('be-base').value);
+    const sales   = parseInt(document.getElementById('be-sales').value);
+    const adopt   = parseInt(document.getElementById('be-adopt').value);
+    const login   = parseInt(document.getElementById('be-login').value);
+    const view    = parseInt(document.getElementById('be-view').value);
+    const fill    = parseInt(document.getElementById('be-fill').value);
+    const rs      = parseInt(document.getElementById('be-rs').value);
+    const fixed   = parseInt(document.getElementById('be-fixed').value);
+    const cpmAnon = 2.0;
+    const cpmCdp  = 6.0;
+
+    document.getElementById('be-lbl-base').textContent   = beN(base);
+    document.getElementById('be-lbl-sales').textContent  = beN(sales) + '/año';
+    document.getElementById('be-lbl-adopt').textContent  = adopt + '%';
+    document.getElementById('be-lbl-login').textContent  = login + '%';
+    document.getElementById('be-lbl-view').textContent   = view + ' min';
+    document.getElementById('be-lbl-fill').textContent   = fill + '%';
+    document.getElementById('be-lbl-rs').textContent     = rs + '%';
+    document.getElementById('be-lbl-fixed').textContent  = beU(fixed);
+
+    const park2026 = parkAvg(base, sales, 2026);
+    const park2027 = parkAvg(base, sales, 2027);
+    const park2028 = parkAvg(base, sales, 2028);
+    const rev26    = beRevBruto(park2026, adopt, login, view, fill, cpmAnon, cpmCdp);
+    const cedido26 = rev26 * rs / 100;
+    const kept26   = rev26 - cedido26;
+    const net26    = kept26 - fixed;
+    const beD      = beBreakevenDevices(adopt, login, view, fill, cpmAnon, cpmCdp, rs, fixed);
+
+    const reachedIn = beD <= park2026 ? '2026' : beD <= park2027 ? '2027' : beD <= park2028 ? '2028' : '>2028';
+    const reachedColor = reachedIn === '2026' ? 'var(--accent)' : reachedIn === '2027' ? 'var(--accent2)' : 'var(--red)';
+
+    // Key cells
+    const actDev = Math.round(park2026 * adopt / 100);
+    const spotsYear = Math.round(actDev * (view / 60) * SPOTS * 365);
+    const soldImpr  = Math.round(spotsYear * fill / 100);
+
+    document.getElementById('be-key-grid').innerHTML = [
+      { label: 'Devices para breakeven', val: beD === Infinity ? '∞' : beN(beD), sub: 'con ' + adopt + '% adoption y ' + rs + '% rev-share', color: beD <= park2026 ? 'var(--accent)' : beD <= 150000 ? 'var(--accent2)' : 'var(--red)' },
+      { label: 'Parque promedio 2026',   val: beN(park2026), sub: beN(base) + ' base + ' + beN(sales) + '/año ventas', color: 'var(--white)' },
+      { label: 'Se alcanza en',          val: reachedIn, sub: reachedIn === '2026' ? 'con el parque actual' : 'con ' + beN(beD) + ' devices', color: reachedColor },
+    ].map(k => `<div class="be-key-cell"><div class="be-key-label">${k.label}</div><div class="be-key-val" style="color:${k.color};">${k.val}</div><div class="be-key-sub">${k.sub}</div></div>`).join('');
+
+    // Math steps
+    document.getElementById('be-math').innerHTML = `
+      <div class="be-math-title">Paso a paso — parque ${beN(park2026)} devices (promedio 2026)</div>
+      <div class="be-math-step"><span class="be-math-n">1</span><span class="be-math-desc">${beN(park2026)} devices × ${adopt}% adoption</span><span class="be-math-calc">= ${beN(actDev)} usuarios activos en FAST</span></div>
+      <div class="be-math-step"><span class="be-math-n">2</span><span class="be-math-desc">${beN(actDev)} usuarios × ${view} min/día ÷ 60 × ${SPOTS} spots/hora × 365 días</span><span class="be-math-calc">= ${beN(spotsYear)} impr. disponibles</span></div>
+      <div class="be-math-step"><span class="be-math-n">3</span><span class="be-math-desc">${beN(spotsYear)} impr. × ${fill}% fill rate</span><span class="be-math-calc">= ${beN(soldImpr)} impr. vendidas / año</span></div>
+      <div class="be-math-step"><span class="be-math-n">4</span><span class="be-math-desc">${beN(soldImpr)} ÷ 1.000 × CPM promedio ponderado</span><span class="be-math-calc">= ${beU(rev26)} revenue bruto</span></div>
+      <div class="be-math-step"><span class="be-math-n">5</span><span class="be-math-desc">${beU(rev26)} × ${rs}% rev-share cedido al contenido</span><span class="be-math-calc">= ${beU(cedido26)} cedido</span></div>
+      <div class="be-math-step result"><span class="be-math-n">6</span><span class="be-math-desc">${beU(rev26)} − ${beU(cedido26)} − ${beU(fixed)} plataforma</span><span class="be-math-calc">${beU(net26)} margen neto 2026</span></div>
+      <div class="be-math-step be-line"><span class="be-math-n">BE</span><span class="be-math-desc">Para breakeven: ${beU(fixed)} ÷ (revenue/device × ${100 - rs}% retenido)</span><span class="be-math-calc">${beD === Infinity ? '∞' : beN(beD) + ' devices'}</span></div>
+    `;
+
+    // Insight
+    const insightEl = document.getElementById('be-insight');
+    if (net26 >= 0) {
+      insightEl.innerHTML = `<strong>✓ Ya estás en breakeven</strong> con el parque actual de ${beN(park2026)} devices. Con el modelo 100% rev-share, el riesgo antes del breakeven es <strong>cero en contenido</strong> — solo exponés los ${beU(fixed)}/año de Amagi + CDN.`;
+    } else {
+      insightEl.innerHTML = `Con el parque actual de <strong>${beN(park2026)} devices</strong> te faltan <strong>${beU(Math.abs(net26))}</strong> para el breakeven. Necesitás llegar a <strong>${beD === Infinity ? '∞' : beN(beD)} devices</strong> — lo alcanzás en <strong>${reachedIn}</strong>. La palanca más directa: subí el adoption pre-instalando Frávega Play en TDF.`;
+    }
+
+    // Scenarios
+    const adoptOpts = [10, 15, 20, 25, 30, 40, 50];
+    const parkOpts  = [50000, 78000, 95000, 120000, 150000];
+    document.getElementById('be-sc-rows').innerHTML = adoptOpts.map(a => {
+      const beDevA = beBreakevenDevices(a, login, view, fill, cpmAnon, cpmCdp, rs, fixed);
+      const cells  = parkOpts.map(p => {
+        const r   = beRevBruto(p, a, login, view, fill, cpmAnon, cpmCdp);
+        const net = r * (1 - rs / 100) - fixed;
+        const isActive = (a === adopt && Math.abs(p - park2026) < 15000);
+        const isBe = (Math.abs(p - beDevA) < 15000);
+        let content = beU(net);
+        let cls = 'be-sc-cell ' + (net >= 0 ? 'pos' : 'neg');
+        if (isBe) content = `<span class="be-badge be-badge-be">BE ~${beN(beDevA)}</span>`;
+        if (isActive) content += ` <span class="be-badge be-badge-act">actual</span>`;
+        return `<div class="${cls}">${content}</div>`;
+      }).join('');
+      return `<div class="be-sc-row ${a === adopt ? 'active-row' : ''}">
+        <div class="be-sc-cell" style="color:${a === adopt ? 'var(--accent)' : 'var(--white)'};">${a === adopt ? '▸ ' : ''}<strong>${a}%</strong> adoption</div>
+        ${cells}
+      </div>`;
+    }).join('');
+
+    // Chart
+    const deviceRange = [];
+    for (let d = 10000; d <= 200000; d += 10000) deviceRange.push(d);
+    const cd = {
+      labels: deviceRange.map(d => beN(d)),
+      datasets: [
+        { label: 'Revenue bruto',      data: deviceRange.map(d => Math.round(beRevBruto(d, adopt, login, view, fill, cpmAnon, cpmCdp))), borderColor: '#d4e020', backgroundColor: 'rgba(212,224,32,0.07)', borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3 },
+        { label: 'Rev-share cedido',   data: deviceRange.map(d => Math.round(beRevBruto(d, adopt, login, view, fill, cpmAnon, cpmCdp) * rs / 100)), borderColor: 'rgba(240,48,96,0.6)', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, borderDash: [5, 4], tension: 0.3 },
+        { label: 'Costo fijo',         data: deviceRange.map(() => fixed), borderColor: 'rgba(136,146,168,0.5)', backgroundColor: 'transparent', borderWidth: 1.5, pointRadius: 0, borderDash: [3, 3], tension: 0 },
+        { label: 'Margen neto',        data: deviceRange.map(d => { const r = beRevBruto(d, adopt, login, view, fill, cpmAnon, cpmCdp); return Math.round(r * (1 - rs / 100) - fixed); }), borderColor: '#22e8c0', backgroundColor: 'rgba(34,232,192,0.06)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3 },
+      ]
+    };
+    if (beChart) { beChart.data = cd; beChart.update(); }
+    else {
+      beChart = new Chart(document.getElementById('be-chart'), {
+        type: 'line', data: cd,
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.dataset.label + ': ' + beU(ctx.parsed.y), title: ctx => 'Parque: ' + ctx[0].label + ' devices' } } },
+          scales: {
+            x: { grid: { color: 'rgba(37,45,66,0.8)' }, ticks: { color: '#8892a8', font: { size: 10 }, maxTicksLimit: 10 } },
+            y: { grid: { color: 'rgba(37,45,66,0.8)' }, ticks: { color: '#8892a8', font: { size: 10 }, callback: v => beU(v) } }
+          }
+        }
+      });
+    }
+  };
+
+  window.beUpdate();
+})();
+</script>
 
 <div class="divider"></div>
 
